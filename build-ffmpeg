@@ -210,6 +210,7 @@ while (($# > 0)); do
     ;;
   -*)
     if [[ "$1" == "--build" || "$1" =~ '-b' ]]; then
+      CONFIGURE_OPTIONS+=("--enable-gpl")
       bflag='-b'
     fi
     if [[ "$1" == "--enable-gpl-and-non-free" ]]; then
@@ -246,10 +247,6 @@ if [ -z "$bflag" ]; then
 fi
 
 echo "Using $MJOBS make jobs simultaneously."
-
-if $NONFREE_AND_GPL; then
-echo "With GPL and non-free codecs"
-fi
 
 if [ -n "$LDEXEFLAGS" ]; then
   echo "Start the build in full static mode."
@@ -420,10 +417,10 @@ if ! $MACOS_M1; then
     execute cp SvtAv1Dec.pc "${WORKSPACE}/lib/pkgconfig/"
     build_done "svtav1"
   fi
-  CONFIGURE_OPTIONS+=("--enable-libsvtav1")
+  #CONFIGURE_OPTIONS+=("--enable-libsvtav1")
 fi
 
-if $NONFREE_AND_GPL; then
+#if $NONFREE_AND_GPL; then
 
   if build "x264"; then
     download "https://code.videolan.org/videolan/x264/-/archive/b684ebe04a6f80f8207a57940a1fa00e25274f81/x264-b684ebe04a6f80f8207a57940a1fa00e25274f81.tar.gz" "x264-b684eb.tar.gz"
@@ -442,9 +439,9 @@ if $NONFREE_AND_GPL; then
     build_done "x264"
   fi
   CONFIGURE_OPTIONS+=("--enable-libx264")
-fi
+#fi
 
-if $NONFREE_AND_GPL; then
+#if $NONFREE_AND_GPL; then
   if build "x265"; then
     download "https://github.com/videolan/x265/archive/Release_3.5.tar.gz" "x265-3.5.tar.gz"
     cd build/linux || exit
@@ -460,7 +457,7 @@ if $NONFREE_AND_GPL; then
     build_done "x265"
   fi
   CONFIGURE_OPTIONS+=("--enable-libx265")
-fi
+#fi
 
 if build "libvpx"; then
   download "https://github.com/webmproject/libvpx/archive/refs/tags/v1.10.0.tar.gz" "libvpx-1.10.0.tar.gz"
@@ -699,7 +696,8 @@ fi
 ##
 
 build "ffmpeg"
-download "https://www.ffmpeg.org/releases/ffmpeg-4.4.tar.gz"
+# download "https://git.ffmpeg.org/gitweb/ffmpeg.git/snapshot/dc91b913b6260e85e1304c74ff7bb3c22a8c9fb1.tar.gz"
+download "https://git.ffmpeg.org/gitweb/ffmpeg.git/snapshot/refs/heads/release/4.1.tar.gz"
 # shellcheck disable=SC2086
 ./configure "${CONFIGURE_OPTIONS[@]}" \
   --disable-debug \
